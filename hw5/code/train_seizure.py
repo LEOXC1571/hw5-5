@@ -87,4 +87,3 @@ test_loss, test_accuracy, test_results = evaluate(best_model, device, test_loade
 
 class_names = ['Seizure', 'TumorArea', 'HealthyArea', 'EyesClosed', 'EyesOpen']
 plot_confusion_matrix(test_results, class_names)
-print(1)
