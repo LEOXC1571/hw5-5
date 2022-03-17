@@ -24,14 +24,15 @@ def load_seizure_dataset(path, model_type):
 
 	if model_type == 'MLP':
 		data = torch.tensor(np.array(raw_data.drop(['y'], axis=1)))
+		data = data.type(torch.FloatTensor)
 		target = torch.tensor(raw_data['y'])
 		dataset = TensorDataset(data, target)
 	elif model_type == 'CNN':
-		data = torch.tensor(raw_data.drop(['y'], axis=1))
+		data = torch.tensor(np.array(raw_data.drop(['y'], axis=1)))
 		target = torch.tensor(raw_data['y'])
 		dataset = TensorDataset(data, target)
 	elif model_type == 'RNN':
-		data = torch.tensor(raw_data.drop(['y'], axis=1))
+		data = torch.tensor(np.array(raw_data.drop(['y'], axis=1)))
 		target = torch.tensor(raw_data['y'])
 		dataset = TensorDataset(data, target)
 	else:
