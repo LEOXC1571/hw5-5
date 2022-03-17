@@ -8,25 +8,55 @@ checksum = '169a9820bbc999009327026c9d76bcf1'
 
 
 class MyMLP(nn.Module):
-	def __init__(self, input_dim=178, hidden_dim=16, output_dim=5):
+	def __init__(self, input_dim=178, hidden_dim=128, output_dim=5):
 		super(MyMLP, self).__init__()
 		self.fc1 = nn.Linear(input_dim, hidden_dim)
 		self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-		self.fc3 = nn.Linear(hidden_dim, output_dim)
+		self.fc3 = nn.Linear(hidden_dim, 64)
+		self.fc4 = nn.Linear(64, output_dim)
 
 	def forward(self, x):
 		sigmoid = nn.Sigmoid()
 		x = sigmoid(self.fc1(x))
 		x = sigmoid(self.fc2(x))
 		x = sigmoid(self.fc3(x))
+		x = sigmoid(self.fc4(x))
 		return x
 
 
 class MyCNN(nn.Module):
 	def __init__(self):
 		super(MyCNN, self).__init__()
+		self.conv1 = nn.Sequential(
+			nn.Conv1d(
+				in_channels=1,
+				out_channels=6,
+				kernel_size=5,
+				padding=2),
+			nn.ReLU(),
+			nn.MaxPool1d(kernel_size=2)
+		)
+		self.conv2 = nn.Sequential(
+			nn.Conv1d(
+				in_channels=6,
+				out_channels=16,
+				kernel_size=5,
+				padding=2),
+			nn.ReLU(),
+			nn.MaxPool1d(kernel_size=2)
+		)
+		self.fc1 = nn.Linear(704, 128)
+		self.fc2 = nn.Linear(128, 128)
+		self.fc3 = nn.Linear(128, 5)
 
 	def forward(self, x):
+		relu = nn.ReLU()
+		x = self.conv1(x)
+		x = self.conv2(x)
+		x = x.view(x.shape[0], 16*44)
+		x = relu(self.fc1(x))
+		x = relu(self.fc2(x))
+		x = relu(self.fc3(x))
 		return x
 
 
