@@ -22,7 +22,7 @@ os.makedirs(PATH_OUTPUT, exist_ok=True)
 
 # Some parameters
 MODEL_TYPE = 'CNN'  # TODO: Change this to 'MLP', 'CNN', or 'RNN' according to your task
-NUM_EPOCHS = 100
+NUM_EPOCHS = 2
 BATCH_SIZE = 16
 USE_CUDA = False  # Set 'True' if you want to use GPU
 NUM_WORKERS = 0  # Number of threads used by DataLoader. You can adjust this according to your machine spec.
@@ -60,7 +60,7 @@ optimizer = optim.Adam(model.parameters())
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 criterion.to(device)
-
+print(model)
 best_val_acc = 0.0
 train_losses, train_accuracies = [], []
 valid_losses, valid_accuracies = [], []

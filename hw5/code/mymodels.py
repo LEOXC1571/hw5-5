@@ -36,6 +36,7 @@ class MyCNN(nn.Module):
 			nn.ReLU(),
 			nn.MaxPool1d(kernel_size=2)
 		)
+
 		self.conv2 = nn.Sequential(
 			nn.Conv1d(
 				in_channels=6,
