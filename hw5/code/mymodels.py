@@ -8,10 +8,14 @@ checksum = '169a9820bbc999009327026c9d76bcf1'
 
 
 class MyMLP(nn.Module):
-	def __init__(self):
+	def __init__(self, input_dim=178, hidden_dim=16, output_dim=2):
 		super(MyMLP, self).__init__()
+		self.fc1 = nn.Linear(input_dim, hidden_dim)
+		self.fc2 = nn.Linear(hidden_dim, output_dim)
 
 	def forward(self, x):
+		x = nn.Sigmoid(self.fc1(x))
+		x = nn.Sigmoid(self.fc2(x))
 		return x
 
 

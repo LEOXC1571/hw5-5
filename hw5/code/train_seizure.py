@@ -80,10 +80,10 @@ for epoch in range(NUM_EPOCHS):
 		best_val_acc = valid_accuracy
 		torch.save(model, os.path.join(PATH_OUTPUT, save_file))
 
-plot_learning_curves(train_losses, valid_losses, train_accuracies, valid_accuracies)
+# plot_learning_curves(train_losses, valid_losses, train_accuracies, valid_accuracies)
 
 best_model = torch.load(os.path.join(PATH_OUTPUT, save_file))
 test_loss, test_accuracy, test_results = evaluate(best_model, device, test_loader, criterion)
 
 class_names = ['Seizure', 'TumorArea', 'HealthyArea', 'EyesClosed', 'EyesOpen']
-plot_confusion_matrix(test_results, class_names)
+# plot_confusion_matrix(test_results, class_names)
