@@ -55,15 +55,28 @@ class MyCNN(nn.Module):
 		x = x.view(x.shape[0], 16*41) # transform x [16, 16, 41] into [16, 656]
 		x = relu(self.fc1(x))
 		x = relu(self.fc2(x))
-		x = relu(self.fc3(x))
+		x = self.fc3(x)
 		return x
 
 
 class MyRNN(nn.Module):
-	def __init__(self):
+	def __init__(self, input_size=178, hidden_units=16, num_layers=1):
 		super(MyRNN, self).__init__()
-
+		self.rnn = nn.RNN(
+			input_size=input_size,
+			hidden_size=hidden_units,
+			num_layers=num_layers,
+			batch_first=True)
+		self.fc1 = nn.Linear(16, 64)
+		self.fc2 = nn.Linear(64, 64)
+		self.fc3 = nn.Linear(64, 5)
 	def forward(self, x):
+		sigmoid = nn.Sigmoid()
+		x, _ = self.rnn(x)
+		x = x.view(x.shape[0], 1 * 16)
+		x = sigmoid(self.fc1(x))
+		x = sigmoid(self.fc2(x))
+		x = sigmoid(self.fc3(x))
 		return x
 
 

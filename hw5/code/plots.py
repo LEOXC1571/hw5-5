@@ -51,7 +51,7 @@ def plot_confusion_matrix(results, class_names):
 	ax.set_xticks(range(len(class_names)))
 	ax.set_xticklabels(class_names, rotation=300)
 	# ax.xticks(rotation=300)
-	im = ax.imshow(data, cmap=plt.cm.get_cmap('YlGnBu'))
+	im = ax.imshow(data, cmap=plt.cm.get_cmap('GnBu'))
 	for i in range(len(class_names)):
 		for j in range(len(class_names)):
 			text = ax.text(j, i, data[i][j],

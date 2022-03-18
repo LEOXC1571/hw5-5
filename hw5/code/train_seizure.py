@@ -21,10 +21,10 @@ PATH_OUTPUT = "../output/seizure/"
 os.makedirs(PATH_OUTPUT, exist_ok=True)
 
 # Some parameters
-MODEL_TYPE = 'CNN'  # TODO: Change this to 'MLP', 'CNN', or 'RNN' according to your task
-NUM_EPOCHS = 2
+MODEL_TYPE = 'RNN'  # TODO: Change this to 'MLP', 'CNN', or 'RNN' according to your task
+NUM_EPOCHS = 50
 BATCH_SIZE = 16
-USE_CUDA = False  # Set 'True' if you want to use GPU
+USE_CUDA = True  # Set 'True' if you want to use GPU
 NUM_WORKERS = 0  # Number of threads used by DataLoader. You can adjust this according to your machine spec.
 
 device = torch.device("cuda" if USE_CUDA and torch.cuda.is_available() else "cpu")
@@ -36,7 +36,7 @@ if device.type == "cuda":
 train_dataset = load_seizure_dataset(PATH_TRAIN_FILE, MODEL_TYPE)
 valid_dataset = load_seizure_dataset(PATH_VALID_FILE, MODEL_TYPE)
 test_dataset = load_seizure_dataset(PATH_TEST_FILE, MODEL_TYPE)
-print(train_dataset.tensors[0].shape)
+
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
 valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
@@ -60,7 +60,7 @@ optimizer = optim.Adam(model.parameters())
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 criterion.to(device)
-print(model)
+
 best_val_acc = 0.0
 train_losses, train_accuracies = [], []
 valid_losses, valid_accuracies = [], []
