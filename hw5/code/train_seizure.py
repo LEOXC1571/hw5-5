@@ -36,7 +36,7 @@ if device.type == "cuda":
 train_dataset = load_seizure_dataset(PATH_TRAIN_FILE, MODEL_TYPE)
 valid_dataset = load_seizure_dataset(PATH_VALID_FILE, MODEL_TYPE)
 test_dataset = load_seizure_dataset(PATH_TEST_FILE, MODEL_TYPE)
-
+print(train_dataset.tensors[0].shape)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
 valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)

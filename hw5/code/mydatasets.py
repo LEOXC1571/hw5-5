@@ -29,10 +29,16 @@ def load_seizure_dataset(path, model_type):
 		dataset = TensorDataset(data, target)
 	elif model_type == 'CNN':
 		x_data = np.array(raw_data.drop(['y'], axis=1))
-		ex_x_data = np.expand_dims(x_data[:, 0:178].astype(float), axis=2)
-		data = torch.tensor(ex_x_data)
+		x1_data = np.expand_dims(x_data[:, 0:178].astype(float), axis=2)
+		# x2_data = np.stack((x_data, x_data),axis=2)
+		# x4_data = np.concatenate((x2_data,x2_data),axis=2)
+		# x5_data = np.concatenate((x4_data,x1_data),axis=2)
+		data = torch.tensor(x1_data)
 		data = data.permute(0, 2, 1)
 		data = data.type(torch.FloatTensor)
+		# np_target = np.array((raw_data['y']))
+		# ex_target = np.expand_dims(np_target.astype(float), axis=0)
+		# target = torch.tensor(ex_target)
 		target = torch.tensor(raw_data['y'])
 		dataset = TensorDataset(data, target)
 	elif model_type == 'RNN':

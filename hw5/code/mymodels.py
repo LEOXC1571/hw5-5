@@ -28,25 +28,23 @@ class MyCNN(nn.Module):
 	def __init__(self):
 		super(MyCNN, self).__init__()
 		self.conv1 = nn.Sequential(
-			nn.Conv1d(
-				in_channels=1,
+			nn.Conv1d( # input tensor: [16, 1, 178]
+				in_channels=1, #in_channels = 1
 				out_channels=6,
-				kernel_size=5,
-				padding=2),
-			nn.ReLU(),
-			nn.MaxPool1d(kernel_size=2)
+				kernel_size=5),
+			nn.ReLU(), # output tensor: [16, 6, 174]
+			nn.MaxPool1d(kernel_size=2) #output tensor: [16, 6, 87]
 		)
-
+		# print(self.conv1.shape)
 		self.conv2 = nn.Sequential(
-			nn.Conv1d(
+			nn.Conv1d( # input tensor: [16, 6, 87]
 				in_channels=6,
 				out_channels=16,
-				kernel_size=5,
-				padding=2),
-			nn.ReLU(),
-			nn.MaxPool1d(kernel_size=2)
+				kernel_size=5),
+			nn.ReLU(), #output tensor: [16, 16, 83]
+			nn.MaxPool1d(kernel_size=2) #output tensor: [16, 16, 41]
 		)
-		self.fc1 = nn.Linear(704, 128)
+		self.fc1 = nn.Linear(656, 128)
 		self.fc2 = nn.Linear(128, 128)
 		self.fc3 = nn.Linear(128, 5)
 
@@ -54,7 +52,7 @@ class MyCNN(nn.Module):
 		relu = nn.ReLU()
 		x = self.conv1(x)
 		x = self.conv2(x)
-		x = x.view(x.shape[0], 16*44)
+		x = x.view(x.shape[0], 16*41) # transform x [16, 16, 41] into [16, 656]
 		x = relu(self.fc1(x))
 		x = relu(self.fc2(x))
 		x = relu(self.fc3(x))
