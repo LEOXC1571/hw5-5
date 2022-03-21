@@ -120,13 +120,10 @@ def visit_collate_fn(batch):
 	x = []
 	y = []
 	temp = []
-	sort = []
-
 	for i in batch:
 		x.append(len(i[0]))
 		y.append(len(i[0]))
 	x.sort(reverse=True)
-
 	for j in x:
 		temp.append(batch[y.index(j)])
 		y[y.index(j)] = []
@@ -134,10 +131,27 @@ def visit_collate_fn(batch):
 	seq = []
 	lengths = []
 	labels = []
+	max_length = 0
 
-	for i in range(len(batch)):
-		seq = batch[i]
-	seqs_tensor = torch.FloatTensor(seq)
+	for i in range(len(temp)):
+		seq.append(temp[i][0])
+		lengths.append(len(temp[i][0]))
+		labels.append(temp[i][1])
+		if temp[i][0].shape[0] > max_length:
+			max_length = temp[i][0].shape[0]
+
+	seqs = []
+	for j in seq:
+		if j.shape[0] < max_length:
+			zeros = np.zeros((max_length-j.shape[0], j.shape[1]))
+			temp = np.append(j, zeros, axis=0)
+		seqs.append(temp)
+
+	# temp = batch.sort(key=lambda x: x[0].shape[0], reversed=True)
+
+
+
+	seqs_tensor = torch.FloatTensor(seqs)
 	lengths_tensor = torch.LongTensor(lengths)
 	labels_tensor = torch.LongTensor(labels)
 

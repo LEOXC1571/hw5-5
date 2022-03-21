@@ -83,6 +83,13 @@ class MyRNN(nn.Module):
 class MyVariableRNN(nn.Module):
 	def __init__(self, dim_input):
 		super(MyVariableRNN, self).__init__()
+		self.fc1 = nn.Linear(dim_input, 32)
+		self.rnn = nn.RNN(
+			input_size=32,
+			hidden_size=16,
+			num_layers=1
+		)
+		self.fc2 = nn.Linear(16, 2)
 		# You may use the input argument 'dim_input', which is basically the number of features
 
 	def forward(self, input_tuple):
