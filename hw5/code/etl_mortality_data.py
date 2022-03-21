@@ -73,11 +73,12 @@ def create_dataset(path, codemap, transform):
     icd_time_group.index = icd_time_group['ADMITTIME']
     icd_time_group = icd_time_group.sort_index()
     subject_group = icd_time_group.groupby(['SUBJECT_ID'])['ICD9_CODE_TRANSFORM'].apply(list).reset_index()
+    subject_group = pd.merge(subject_group, df_mortality, on='SUBJECT_ID', how='left')
 
     # TODO: 6. Make patient-id List and label List also.
     # TODO: The order of patients in the three List output must be consistent.
     patient_ids = subject_group['SUBJECT_ID'].tolist()
-    labels = df_diagnoses_icd['ICD9_CODE_TRANSFORM'].tolist()
+    labels = subject_group['MORTALITY'].tolist()
     seq_data = subject_group['ICD9_CODE_TRANSFORM'].tolist()
     return patient_ids, labels, seq_data
 

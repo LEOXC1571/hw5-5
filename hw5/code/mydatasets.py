@@ -55,7 +55,12 @@ def calculate_num_features(seqs):
 	:return: the calculated number of features
 	"""
 	# TODO: Calculate the number of features (diagnoses codes in the train set)
-	return 1
+	temp = []
+	for i in range(len(seqs)):
+		for j in range(len(seqs[i])):
+			temp.extend(seqs[i][j])
+	drop_dup = list(set(temp))
+	return len(drop_dup)
 
 
 class VisitSequenceWithLabelDataset(Dataset):
@@ -75,7 +80,18 @@ class VisitSequenceWithLabelDataset(Dataset):
 		# TODO: Complete this constructor to make self.seqs as a List of which each element represent visits of a patient
 		# TODO: by Numpy matrix where i-th row represents i-th visit and j-th column represent the feature ID j.
 		# TODO: You can use Sparse matrix type for memory efficiency if you want.
-		self.seqs = [i for i in range(len(labels))]  # replace this with your implementation.
+		self.seqs = []
+		for i in range(len(labels)):
+			temp_x = []
+			temp_y = []
+			for j in range(len(seqs[i])):
+				for k in range(len(seqs[i][j])):
+					temp_x.append(j)
+					temp_y.append(seqs[i][j][k])
+			values = [1 for _ in range(len(temp_x))]
+			mat = sparse.coo_matrix((values, (temp_x, temp_y)),shape=(len(seqs[i]), num_features))
+			mat = mat.toarray()
+			self.seqs.append(mat) # replace this with your implementation.
 
 	def __len__(self):
 		return len(self.labels)
@@ -101,8 +117,28 @@ def visit_collate_fn(batch):
 	# TODO: 1. a tuple of (Tensor contains the sequence data , Tensor contains the length of each sequence),
 	# TODO: 2. Tensor contains the label of each sequence
 
-	seqs_tensor = torch.FloatTensor()
-	lengths_tensor = torch.LongTensor()
-	labels_tensor = torch.LongTensor()
+	x = []
+	y = []
+	temp = []
+	sort = []
+
+	for i in batch:
+		x.append(len(i[0]))
+		y.append(len(i[0]))
+	x.sort(reverse=True)
+
+	for j in x:
+		temp.append(batch[y.index(j)])
+		y[y.index(j)] = []
+
+	seq = []
+	lengths = []
+	labels = []
+
+	for i in range(len(batch)):
+		seq = batch[i]
+	seqs_tensor = torch.FloatTensor(seq)
+	lengths_tensor = torch.LongTensor(lengths)
+	labels_tensor = torch.LongTensor(labels)
 
 	return (seqs_tensor, lengths_tensor), labels_tensor
