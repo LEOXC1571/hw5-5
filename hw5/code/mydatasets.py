@@ -144,14 +144,20 @@ def visit_collate_fn(batch):
 	for j in seq:
 		if j.shape[0] < max_length:
 			zeros = np.zeros((max_length-j.shape[0], j.shape[1]))
-			temp = np.append(j, zeros, axis=0)
-		seqs.append(temp)
+			fillzero = np.append(j, zeros, axis=0)
+			seqs.append(fillzero)
+		else:
+			seqs.append(j)
+	seqs_ls = []
+	for i in range(len(seqs)):
+		seqi = seqs[i].tolist()
+		seqs_ls.append(seqi)
 
 	# temp = batch.sort(key=lambda x: x[0].shape[0], reversed=True)
 
 
 
-	seqs_tensor = torch.FloatTensor(seqs)
+	seqs_tensor = torch.FloatTensor(seqs_ls)
 	lengths_tensor = torch.LongTensor(lengths)
 	labels_tensor = torch.LongTensor(labels)
 

@@ -87,7 +87,8 @@ class MyVariableRNN(nn.Module):
 		self.rnn = nn.RNN(
 			input_size=32,
 			hidden_size=16,
-			num_layers=1
+			num_layers=1,
+			batch_first=True
 		)
 		self.fc2 = nn.Linear(16, 2)
 		# You may use the input argument 'dim_input', which is basically the number of features
@@ -97,5 +98,10 @@ class MyVariableRNN(nn.Module):
 		# 'pack_padded_sequence' and 'pad_packed_sequence' from torch.nn.utils.rnn
 
 		seqs, lengths = input_tuple
+		pack = pack_padded_sequence(seqs, lengths, batch_first=True)
+		tanh = nn.Tanh()
+		x = tanh(self.fc1(pack.data))
+		x = self.rnn(x)
+		x = self.fc2(x)
 
 		return seqs
