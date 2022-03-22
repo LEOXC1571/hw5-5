@@ -84,13 +84,13 @@ class MyVariableRNN(nn.Module):
 	def __init__(self, dim_input):
 		super(MyVariableRNN, self).__init__()
 		self.fc1 = nn.Linear(dim_input, 32)
-		self.rnn = nn.RNN(
+		self.gru = nn.GRU(
 			input_size=32,
 			hidden_size=16,
 			num_layers=1,
 			batch_first=True
 		)
-		self.fc2 = nn.Linear(16, 2)
+		self.fc2 = nn.Linear(32, 5) #
 		# You may use the input argument 'dim_input', which is basically the number of features
 
 	def forward(self, input_tuple):
@@ -99,9 +99,12 @@ class MyVariableRNN(nn.Module):
 		tanh = nn.Tanh()
 		x = tanh(self.fc1(seqs))
 		pack = pack_padded_sequence(x, lengths, batch_first=True)
-		out, _ = self.rnn(pack)
+		out, _ = self.gru(pack)
 		# y = self.fc2(out.data)
 		unpacked, _ = pad_packed_sequence(out, batch_first=True)
-		x = unpacked.reshape(unpacked.shape[0], unpacked.shape[1]*unpacked.shape[2])
-		# x = self.fc2(x)
+
+		#x = unpacked.reshape(unpacked.shape[0], unpacked.shape[1]*unpacked.shape[2])
+		# last state
+		x = unpacked[:, :, -1]
+		x = self.fc2(x)
 		return x
