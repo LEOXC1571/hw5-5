@@ -154,9 +154,6 @@ def visit_collate_fn(batch):
 		seqs_ls.append(seqi)
 
 	# temp = batch.sort(key=lambda x: x[0].shape[0], reversed=True)
-
-
-
 	seqs_tensor = torch.FloatTensor(seqs_ls)
 	lengths_tensor = torch.LongTensor(lengths)
 	labels_tensor = torch.LongTensor(labels)

@@ -95,13 +95,13 @@ class MyVariableRNN(nn.Module):
 
 	def forward(self, input_tuple):
 		# HINT: Following two methods might be useful
-		# 'pack_padded_sequence' and 'pad_packed_sequence' from torch.nn.utils.rnn
-
 		seqs, lengths = input_tuple
-		pack = pack_padded_sequence(seqs, lengths, batch_first=True)
 		tanh = nn.Tanh()
-		x = tanh(self.fc1(pack.data))
-		x = self.rnn(x)
-		x = self.fc2(x)
-
-		return seqs
+		x = tanh(self.fc1(seqs))
+		pack = pack_padded_sequence(x, lengths, batch_first=True)
+		out, _ = self.rnn(pack)
+		# y = self.fc2(out.data)
+		unpacked, _ = pad_packed_sequence(out, batch_first=True)
+		x = unpacked.reshape(unpacked.shape[0], unpacked.shape[1]*unpacked.shape[2])
+		# x = self.fc2(x)
+		return x
