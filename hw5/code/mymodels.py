@@ -90,7 +90,7 @@ class MyVariableRNN(nn.Module):
 			num_layers=1,
 			batch_first=True
 		)
-		self.fc2 = nn.Linear(32, 5) #
+		self.fc2 = nn.Linear(16, 2) # 16 hidden size and binary classification
 		# You may use the input argument 'dim_input', which is basically the number of features
 
 	def forward(self, input_tuple):
@@ -104,7 +104,5 @@ class MyVariableRNN(nn.Module):
 		unpacked, _ = pad_packed_sequence(out, batch_first=True)
 
 		#x = unpacked.reshape(unpacked.shape[0], unpacked.shape[1]*unpacked.shape[2])
-		# last state
-		x = unpacked[:, :, -1]
-		x = self.fc2(x)
-		return x
+		x = self.fc2(unpacked)
+		return torch.sum(x, dim=1)

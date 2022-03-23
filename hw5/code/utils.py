@@ -52,35 +52,31 @@ def train(model, device, data_loader, criterion, optimizer, epoch, print_freq=10
 		else:
 			input = input.to(device)
 		target = target.to(device)
-		_, lens = input
-		lens = int(max(lens))
-		print(lens)
-	# 	optimizer.zero_grad()
-	# 	# output = model(input)
-	# 	output = -target/2
-	# 	loss = criterion(output, target)
-	# 	assert not np.isnan(loss.item()), 'Model diverged with loss = NaN'
-	#
-	# 	loss.backward()
-	# 	optimizer.step()
-	#
-	# 	# measure elapsed time
-	# 	batch_time.update(time.time() - end)
-	# 	end = time.time()
-	#
-	# 	losses.update(loss.item(), target.size(0))
-	# 	accuracy.update(compute_batch_accuracy(output, target).item(), target.size(0))
-	#
-	# 	if i % print_freq == 0:
-	# 		print('Epoch: [{0}][{1}/{2}]\t'
-	# 			  'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-	# 			  'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
-	# 			  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-	# 			  'Accuracy {acc.val:.3f} ({acc.avg:.3f})'.format(
-	# 			epoch, i, len(data_loader), batch_time=batch_time,
-	# 			data_time=data_time, loss=losses, acc=accuracy))
-	#
-	# return losses.avg, accuracy.avg
+		optimizer.zero_grad()
+		output = model(input)
+		loss = criterion(output, target)
+		assert not np.isnan(loss.item()), 'Model diverged with loss = NaN'
+
+		loss.backward()
+		optimizer.step()
+
+		# measure elapsed time
+		batch_time.update(time.time() - end)
+		end = time.time()
+
+		losses.update(loss.item(), target.size(0))
+		accuracy.update(compute_batch_accuracy(output, target).item(), target.size(0))
+
+		if i % print_freq == 0:
+			print('Epoch: [{0}][{1}/{2}]\t'
+				  'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+				  'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
+				  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+				  'Accuracy {acc.val:.3f} ({acc.avg:.3f})'.format(
+				epoch, i, len(data_loader), batch_time=batch_time,
+				data_time=data_time, loss=losses, acc=accuracy))
+
+	return losses.avg, accuracy.avg
 
 
 def evaluate(model, device, data_loader, criterion, print_freq=10):
