@@ -62,7 +62,7 @@ class MyCNN(nn.Module):
 class MyRNN(nn.Module):
 	def __init__(self, input_size=178, hidden_units=16, num_layers=1):
 		super(MyRNN, self).__init__()
-		self.rnn = nn.RNN(
+		self.gru = nn.GRU(
 			input_size=input_size,
 			hidden_size=hidden_units,
 			num_layers=num_layers,
@@ -72,7 +72,8 @@ class MyRNN(nn.Module):
 		self.fc3 = nn.Linear(64, 5)
 	def forward(self, x):
 		sigmoid = nn.Sigmoid()
-		x, _ = self.rnn(x)
+		x = x.permute(0, 2, 1)
+		x, _ = self.gru(x)
 		x = x.view(x.shape[0], 1 * 16)
 		x = sigmoid(self.fc1(x))
 		x = sigmoid(self.fc2(x))
@@ -96,13 +97,13 @@ class MyVariableRNN(nn.Module):
 	def forward(self, input_tuple):
 		# HINT: Following two methods might be useful
 		seqs, lengths = input_tuple
+		lengths = lengths.cpu()
 		tanh = nn.Tanh()
 		x = tanh(self.fc1(seqs))
 		pack = pack_padded_sequence(x, lengths, batch_first=True)
 		out, _ = self.gru(pack)
 		# y = self.fc2(out.data)
 		unpacked, _ = pad_packed_sequence(out, batch_first=True)
-
 		#x = unpacked.reshape(unpacked.shape[0], unpacked.shape[1]*unpacked.shape[2])
 		x = self.fc2(unpacked)
 		return torch.sum(x, dim=1)

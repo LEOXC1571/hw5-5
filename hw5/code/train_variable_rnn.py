@@ -22,7 +22,7 @@ PATH_TEST_IDS = "../data/mortality/processed/mortality.ids.test"
 PATH_OUTPUT = "../output/mortality/"
 os.makedirs(PATH_OUTPUT, exist_ok=True)
 
-NUM_EPOCHS = 1
+NUM_EPOCHS = 10
 BATCH_SIZE = 32
 USE_CUDA = False  # Set 'True' if you want to use GPU
 NUM_WORKERS = 0
@@ -81,13 +81,17 @@ for epoch in range(NUM_EPOCHS):
 best_model = torch.load(os.path.join(PATH_OUTPUT, "MyVariableRNN.pth"))
 # TODO: For your report, try to make plots similar to those in the previous task.
 # TODO: You may use the validation set in case you cannot use the test set.
-
+plot_learning_curves(train_losses, valid_losses, train_accuracies, valid_accuracies)
+# test_loss, test_accuracy, test_results = evaluate(best_model, device, test_loader, criterion)
+class_names = ['Dead', 'Live']
+plot_confusion_matrix(valid_results, class_names)
 
 # TODO: Complete predict_mortality
 def predict_mortality(model, device, data_loader):
 	model.eval()
 	# TODO: Evaluate the data (from data_loader) using model,
 	# TODO: return a List of probabilities
+	test_loss, test_accuracy, test_results = evaluate(best_model, device, data_loader, criterion)
 	probas = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 	return probas
 

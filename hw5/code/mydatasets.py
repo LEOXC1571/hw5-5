@@ -39,7 +39,7 @@ def load_seizure_dataset(path, model_type):
 		x_data = np.array(raw_data.drop(['y'], axis=1))
 		x_data = np.expand_dims(x_data[:, 0:178].astype(float), axis=2)
 		data = torch.tensor(x_data)
-		data = data.permute(0, 2, 1)
+		# data = data.permute(0, 2, 1)
 		data = data.type(torch.FloatTensor)
 		target = torch.tensor(raw_data['y'])
 		dataset = TensorDataset(data, target)
@@ -141,6 +141,7 @@ def visit_collate_fn(batch):
 			max_length = temp[i][0].shape[0]
 
 	seqs = []
+
 	for j in seq:
 		if j.shape[0] < max_length:
 			zeros = np.zeros((max_length-j.shape[0], j.shape[1]))

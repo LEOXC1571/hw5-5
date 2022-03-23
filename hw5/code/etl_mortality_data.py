@@ -24,6 +24,10 @@ def convert_icd9(icd9_object):
     if icd9_str[0] == 'E':
         converted = icd9_str[0:4]
     elif icd9_str[0] == 'V':
+        # if len(icd9_str) == 3:
+        #     converted = icd9_str[0:3]
+        # else:
+        #     converted = icd9_str[0:4]
         converted = icd9_str[0:3]
     else:
         converted = icd9_str[0:3]
@@ -35,10 +39,12 @@ def build_codemap(df_icd9, transform):
     :return: Dict of code map {main-digits of ICD9: unique feature ID}
     """
     # TODO: We build a code map using ONLY train data. Think about how to construct validation/test sets using this.
-    df_digits = df_icd9['ICD9_CODE'].apply(transform)
-    df_digits_ls = df_digits.tolist()
-    df_icd9_ls = df_icd9['ICD9_CODE'].tolist()
-    codemap = dict(zip(df_digits_ls, df_icd9_ls))
+
+    df_icd9['MAIN_ICD9_CODE'] = df_icd9['ICD9_CODE'].apply(transform)
+    df_icd9['Feature_ID'] = LabelEncoder().fit_transform(df_icd9['MAIN_ICD9_CODE'])
+    main_digits = df_icd9['MAIN_ICD9_CODE'].tolist()
+    feat_id = df_icd9['Feature_ID'].tolist()
+    codemap = dict(zip(main_digits, feat_id))
     return codemap
 
 
@@ -57,9 +63,17 @@ def create_dataset(path, codemap, transform):
 
     # TODO: 2. Convert diagnosis code in to unique feature ID.
     # TODO: HINT - use 'transform(convert_icd9)' you implemented and 'codemap'.
+    df_diagnoses_icd = df_diagnoses_icd.dropna()
     df_diagnoses_icd['ICD9_CODE'] = df_diagnoses_icd['ICD9_CODE'].apply(transform)
     df_diagnoses_icd['ICD9_CODE_TRANSFORM'] = LabelEncoder().fit_transform(df_diagnoses_icd['ICD9_CODE'])
     labelmap = dict(zip(df_diagnoses_icd['ICD9_CODE'].tolist(), df_diagnoses_icd['ICD9_CODE_TRANSFORM'].tolist()))
+    # df_diagnoses_icd = df_diagnoses_icd.dropna()
+    # df_diagnoses_icd['ICD9_CODE'] = df_diagnoses_icd['ICD9_CODE'].apply(transform)
+    # codemap_pd = pd.DataFrame(list(codemap.items()), columns=['ICD9_CODE', 'ICD9_CODE_TRANSFORM'])
+    # df_diagnoses_icd = pd.merge(df_diagnoses_icd, codemap_pd, on='ICD9_CODE', how='left')
+    # df_diagnoses_icd['ICD9_CODE_TRANSFORM'] = df_diagnoses_icd['ICD9_CODE_TRANSFORM'].fillna(value=911)
+    # df_diagnoses_icd = df_diagnoses_icd.drop_duplicates(['SUBJECT_ID', 'HADM_ID', 'ICD9_CODE_TRANSFORM'])
+
 
     # TODO: 3. Group the diagnosis codes for the same visit.
     icd_group = df_diagnoses_icd.groupby(['SUBJECT_ID', 'HADM_ID'])['ICD9_CODE_TRANSFORM'].apply(list).reset_index()
