@@ -106,4 +106,8 @@ class MyVariableRNN(nn.Module):
 		unpacked, _ = pad_packed_sequence(out, batch_first=True)
 		#x = unpacked.reshape(unpacked.shape[0], unpacked.shape[1]*unpacked.shape[2])
 		x = self.fc2(unpacked)
-		return torch.sum(x, dim=1)
+		x = torch.sum(x, dim=1)
+		# len = lengths.shape[0]
+		# for i in range(len):
+		# 	x[i, :] = x[i, :]/lengths[i]
+		return x

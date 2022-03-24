@@ -22,7 +22,7 @@ os.makedirs(PATH_OUTPUT, exist_ok=True)
 
 # Some parameters
 MODEL_TYPE = 'RNN'  # TODO: Change this to 'MLP', 'CNN', or 'RNN' according to your task
-NUM_EPOCHS = 50
+NUM_EPOCHS = 100
 BATCH_SIZE = 16
 USE_CUDA = True  # Set 'True' if you want to use GPU
 NUM_WORKERS = 0  # Number of threads used by DataLoader. You can adjust this according to your machine spec.

@@ -22,7 +22,7 @@ PATH_TEST_IDS = "../data/mortality/processed/mortality.ids.test"
 PATH_OUTPUT = "../output/mortality/"
 os.makedirs(PATH_OUTPUT, exist_ok=True)
 
-NUM_EPOCHS = 10
+NUM_EPOCHS = 1
 BATCH_SIZE = 32
 USE_CUDA = False  # Set 'True' if you want to use GPU
 NUM_WORKERS = 0
@@ -83,7 +83,7 @@ best_model = torch.load(os.path.join(PATH_OUTPUT, "MyVariableRNN.pth"))
 # TODO: You may use the validation set in case you cannot use the test set.
 plot_learning_curves(train_losses, valid_losses, train_accuracies, valid_accuracies)
 # test_loss, test_accuracy, test_results = evaluate(best_model, device, test_loader, criterion)
-class_names = ['Dead', 'Live']
+class_names = ['Live', 'Dead']
 plot_confusion_matrix(valid_results, class_names)
 
 # TODO: Complete predict_mortality
@@ -91,8 +91,23 @@ def predict_mortality(model, device, data_loader):
 	model.eval()
 	# TODO: Evaluate the data (from data_loader) using model,
 	# TODO: return a List of probabilities
-	test_loss, test_accuracy, test_results = evaluate(best_model, device, data_loader, criterion)
-	probas = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+	probas = []
+	softmax = nn.Softmax()
+	for i, (input, target) in enumerate(data_loader):
+		if isinstance(input, tuple):
+			input = tuple([e.to(device) if type(e) == torch.Tensor else e for e in input])
+		else:
+			input = input.to(device)
+		target = target.to(device)
+		output = model(input)
+		output =softmax(output.data)
+		output = output.numpy()
+		probas.append(output[0,1])
+
+
+	# test_loss, test_accuracy, test_results = evaluate(best_model, device, data_loader, criterion)
+	# output = model(data_loader)
+	# output = nn.Softmax(output)
 	return probas
 
 

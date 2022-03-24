@@ -21,7 +21,7 @@ def plot_learning_curves(train_losses, valid_losses, train_accuracies, valid_acc
 	ax2.set_xlabel('Epoch')
 	ax2.set_ylabel('Accuracy')
 	ax2.legend([ta, va], ['Training Accuracy', 'Validation Accuracy'])
-	# plt.savefig('Learning_curve.png')
+	plt.savefig('Learning_curve.png')
 	plt.show()
 	pass
 
@@ -58,6 +58,6 @@ def plot_confusion_matrix(results, class_names):
 						   ha="center", va="center")
 	plt.colorbar(im)
 	plt.title("Normalized Confusion Matrix")
-	# plt.savefig('Normalized Confusion Matrix.png')
+	plt.savefig('Normalized Confusion Matrix.png')
 	plt.show()
 	pass
